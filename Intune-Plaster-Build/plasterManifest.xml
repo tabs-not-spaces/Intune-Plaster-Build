@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<plasterManifest schemaVersion="1.1" templateType="Project"
+  xmlns="http://www.microsoft.com/schemas/PowerShell/Plaster/v1">
+  <metadata>
+    <name>Intune-Plaster-Build</name>
+    <id>6c5e7287-17ea-4e8b-a1be-203460ddc557</id>
+    <version>0.9</version>
+    <title>Intune Plaster-Build</title>
+    <description></description>
+    <author>Ben Reader</author>
+    <tags></tags>
+  </metadata>
+  <parameters>
+    <parameter name="ClientName" type='text' prompt='Who is the client?' default='Powers-Hell' />
+    <parameter name="ClientDomain" type='text' prompt='What is the client domain name?' default='powers-hell.com' />
+
+    <parameter name="ConfigPolicy" type='choice' prompt='Are you setting up configuration policies?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+    <parameter name="confBitlocker" condition="$PLASTER_PARAM_ConfigPolicy -eq 'true'" type='choice' prompt='Bitlocker?' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+
+    <parameter name="confCorpBranding" condition="$PLASTER_PARAM_ConfigPolicy -eq 'true'" type='choice' prompt='Corporate Branding?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+    <parameter name="desktopImageUrl" condition="$PLASTER_PARAM_confCorpBranding -eq 'true'" type='text' prompt='Wheres the desktop image stored?' />
+    <parameter name="lockscreenImageUrl" condition="$PLASTER_PARAM_confCorpBranding -eq 'true'" type='text' prompt='Wheres the lockscreen image stored?' />
+
+    <parameter name="confDevRestrictions" condition="$PLASTER_PARAM_ConfigPolicy -eq 'true'" type='choice' prompt='Device Restrictions?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+    <parameter name="homepageUrl" condition="$PLASTER_PARAM_confDevRestrictions -eq 'true'" type='text' prompt='What homepage do we wanna set up?' />
+
+    <parameter name="confEndProtection" condition="$PLASTER_PARAM_ConfigPolicy -eq 'true'" type='choice' prompt='Endpoint Protection?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+    <parameter name="corporateMsgTitle" condition="$PLASTER_PARAM_confEndProtection -eq 'true'" type='text' prompt='Corporate Message Title?' />
+    <parameter name="corporateMsgText" condition="$PLASTER_PARAM_confEndProtection -eq 'true'" type='text' prompt='Corporate Message?' />
+
+    <parameter name="CompliancePolicy" type='choice' prompt='Are you setting up compliance policies?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+
+    <parameter name="compBitlocker" condition="$PLASTER_PARAM_CompliancePolicy -eq 'true'" type='choice' prompt='Basic Bitlocker?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+
+    <parameter name="scriptTimezone" type='choice' prompt='Do you want to deploy the Timezone Script' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+    <parameter name="scriptbitlocker" type='choice' prompt='Do you want to deploy the bitlocker script?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+
+    <parameter name="scriptonedrive" type='choice' prompt='Do you want to deploy the onedrive script?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+
+    <parameter name="scriptwallpaperFix" type='choice' prompt='Do you want to deploy the wallpaperFix script?' default='1' store='text' >
+      <choice label='&amp;Yes' help="Yes." value='true'/>
+      <choice label='&amp;No' help="No." value='false'/>
+    </parameter>
+  </parameters>
+  <content>
+  <message>&#10;&#10;building from modules...&#10;&#10;&#10;</message>
+  <templateFile source='templates\config-profiles\win10 Bitlocker.json' condition="$PLASTER_PARAM_confBitlocker -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\configuration\Win10 Bitlocker.json'/>
+  <templateFile source='templates\config-profiles\Win10 Corporate Branding.json' condition="$PLASTER_PARAM_confCorpBranding -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\configuration\Win10-Corporate-Branding.json'/>
+  <templateFile source='templates\config-profiles\Win10 Device Restrictions.json' condition="$PLASTER_PARAM_confDevRestrictions-eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\configuration\Win10-Device-Restrictions.json'/>
+  <templateFile source='templates\config-profiles\Win10 Endpoint Protection.json' condition="$PLASTER_PARAM_confEndProtection -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\configuration\Win10-Endpoint-Protection.json'/>
+
+  <templateFile source='templates\compliance-policies\Win10 Basic Compliance.json' condition="$PLASTER_PARAM_compBitlocker -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\compliance\Win10-Basic-Compliance.json'/>
+
+  <templateFile source='templates\scripts\Auto Timezone Config\Auto Timezone Config.ps1' condition="$PLASTER_PARAM_scriptTimezone -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\scripts\Auto Timezone Config\Auto Timezone Config.ps1'/>
+  <file source='templates\scripts\Auto Timezone Config\Auto Timezone Config.json' condition="$PLASTER_PARAM_scriptTimezone -eq 'true'" destination='EUC-${PLASTER_PARAM_ClientName}\scripts\Auto Timezone Config\Auto Timezone Config.json'/>
+
+  <templateFile source='templates\scripts\Enable Bitlocker not on 1809\Enable Bitlocker not on 1809.ps1' condition="$PLASTER_PARAM_scriptbitlocker -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\scripts\Enable Bitlocker not on 1809\Enable Bitlocker not on 1809.ps1'/>
+  <file source='templates\scripts\Enable Bitlocker not on 1809\Enable Bitlocker not on 1809.json' condition="$PLASTER_PARAM_scriptbitlocker -eq 'true'" destination='EUC-${PLASTER_PARAM_ClientName}\scripts\Enable Bitlocker not on 1809\Enable Bitlocker not on 1809.json'/>
+
+  <templateFile source='templates\scripts\OD4B Silent Config\OD4B Silent Config.ps1' condition="$PLASTER_PARAM_scriptonedrive -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\scripts\OD4B Silent Config\OD4B Silent Config.ps1'/>
+  <file source='templates\scripts\OD4B Silent Config\OD4B Silent Config.json' condition="$PLASTER_PARAM_scriptonedrive -eq 'true'" destination='EUC-${PLASTER_PARAM_ClientName}\scripts\OD4B Silent Config\OD4B Silent Config.json'/>
+
+  <templateFile source='templates\scripts\Wallpaper Scaling\Wallpaper Scaling.ps1' condition="$PLASTER_PARAM_scriptwallpaperFix -eq 'true'"  destination='EUC-${PLASTER_PARAM_ClientName}\scripts\Wallpaper Scaling\Wallpaper Scaling.ps1'/>
+  <file source='templates\scripts\Wallpaper Scaling\Wallpaper Scaling.json' condition="$PLASTER_PARAM_scriptwallpaperFix -eq 'true'" destination='EUC-${PLASTER_PARAM_ClientName}\scripts\Wallpaper Scaling\Wallpaper Scaling.json'/>
+  </content>
+</plasterManifest>

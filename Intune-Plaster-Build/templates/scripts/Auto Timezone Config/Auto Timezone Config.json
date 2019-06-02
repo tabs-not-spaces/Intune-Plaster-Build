@@ -1,0 +1,9 @@
+{
+    "@odata.context":  "https://graph.microsoft.com/Beta/$metadata#deviceManagement/deviceManagementScripts/$entity",
+    "displayName":  "Auto Timezone Config",
+    "description":  "",
+    "runAsAccount":  "system",
+    "enforceSignatureCheck":  false,
+    "fileName":  "TimeZone_AutoUpdate.ps1",
+    "runAs32Bit":  true
+}

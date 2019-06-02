@@ -1,0 +1,9 @@
+{
+    "@odata.context":  "https://graph.microsoft.com/Beta/$metadata#deviceManagement/deviceManagementScripts/$entity",
+    "displayName":  "Enable Bitlocker not on 1809",
+    "description":  "Enable bitlocker for devices on 1803 or lower.",
+    "runAsAccount":  "system",
+    "enforceSignatureCheck":  false,
+    "fileName":  "Enable_BitLocker.ps1",
+    "runAs32Bit":  false
+}
