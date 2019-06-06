@@ -1,0 +1,19 @@
+client: Contoso
+tenantDomain: contoso.com
+configPolicies:
+ - bitlocker
+ - corporateBranding:
+   - desktopImageUrl: ""
+   - lockscreenImageUrl: "" 
+ - deviceRestrictions:
+   - homepageUrl: "https://contoso.com"
+ - endpointProtection:
+   - corporateMsgTitle: "Welcome to Contoso!"
+   - corporateMsgText: "Enter at your own risk..."
+compliancePolicies:
+ - bitlocker
+scripts:
+ - timezone
+ - bitlocker
+ - onedrive
+ - wallpaperFix
