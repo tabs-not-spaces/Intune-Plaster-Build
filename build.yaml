@@ -1,0 +1,23 @@
+pool:
+  name: Hosted VS2017
+trigger:
+  branches:
+    include:
+    - master
+
+  paths:
+    include:
+    - test.yaml
+variables:
+  build.account: 'ben@powers-hell.com'
+  build.tenantid: 'powers-hell.com'
+#'build.passwd' needs to be created manually as it is a "secret" - create the pipeline and add it into the variable section.
+
+steps:
+  - stage: 'Run build.ps1'
+  - task: PowerShell@2
+    displayName: 'Publish Profiles'
+    inputs:
+      targetType: filePath
+      filePath: ./build.ps1
+      arguments: '-un "$(build.account)" -pw "$(build.passwd)" -tenantId "$(build.tenantid)" -yamlPath ".\test.yaml"'
